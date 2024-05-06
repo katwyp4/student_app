@@ -35,11 +35,13 @@ Projekt został zbudowany przy użyciu:
 - server/: Struktura serwera Node.js/Express z katalogami:
   - routes/: Definicje ścieżek dla routerów.
   - controllers/: Kontrolery obsługujące logikę aplikacji.
-  - services/: Serwisy wykonujące specyficzne zadania biznesowe.
+  - views/: Domyślne widoki aplikacji.
 
 ### Informacje dodatkowe
 - SQLite: Używana jako system zarządzania bazą danych.
 - Axios: Biblioteka służąca do wykonywania żądań HTTP między klientem a serwerem.
+- AntDesign: Biblioteka zawierająca bogatą kolekcję gotowych, responsywnyh komponentów.
+- Express.js: Framework do obsługi backendu.
 - Node.js: wersję można sprawdzić za pomocą komendy
 
   ```bash
