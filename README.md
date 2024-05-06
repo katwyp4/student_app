@@ -18,10 +18,12 @@ Projekt został zbudowany przy użyciu:
 - Aby uruchomić środowisko frontendowe, użyj:
   ```bash
   cd client
+  npm install
   npm start
 - Aby uruchomić środowisko backendowe, użyj:
   ```bash
   cd server
+  npm install
   npm start
 
 ### Struktura plików
@@ -38,3 +40,6 @@ Projekt został zbudowany przy użyciu:
 ### Informacje dodatkowe
 - SQLite: Używana jako system zarządzania bazą danych.
 - Axios: Biblioteka służąca do wykonywania żądań HTTP między klientem a serwerem.
+- Node.js: wersję można sprawdzić za pomocą komendy
+  ```bash
+  node -v
