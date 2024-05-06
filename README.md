@@ -41,5 +41,6 @@ Projekt został zbudowany przy użyciu:
 - SQLite: Używana jako system zarządzania bazą danych.
 - Axios: Biblioteka służąca do wykonywania żądań HTTP między klientem a serwerem.
 - Node.js: wersję można sprawdzić za pomocą komendy
+
   ```bash
   node -v
