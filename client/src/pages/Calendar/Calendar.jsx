@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
 import {Badge, Calendar, ConfigProvider} from 'antd';
+import { BiArrowBack } from "react-icons/bi";
+import { useNavigate } from 'react-router-dom';
 
 let dayEvent = [
     {
@@ -32,10 +34,15 @@ let dayEvent = [
     }
 ]
 export default function Calendar_fun(){
+    let navigate = useNavigate();
 
     useEffect(() => {
         document.body.style.background = '#f5f5f5'
     }, []);
+
+    const handleBackToMenu = () => {
+        navigate('/menu');
+    };
 
     const getListData = (value) => {
        const listData = dayEvent.filter(event =>
@@ -83,11 +90,26 @@ export default function Calendar_fun(){
             border-bottom-right-radius: 40px;
             font-family: 'Readex Pro', sans-serif;
         }
+        
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            cursor: pointer;
+            font-size: 24px;
+            color: #FFFFFF;
+        }
       `}</style>
-            <div className="calendar-header">Kalendarz</div>
-            <Calendar dateCellRender={dateCellRender} />
+            <div className="calendar-header">
+                <div className="back-button" onClick={handleBackToMenu}>
+                    <BiArrowBack />
+                </div>
+                Kalendarz</div>
+            <Calendar dateCellRender={dateCellRender}/>
+
         </ConfigProvider>
     );
 };
+
 
 
