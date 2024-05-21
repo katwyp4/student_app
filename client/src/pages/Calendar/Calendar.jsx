@@ -2,86 +2,43 @@ import React from 'react';
 import { Badge, Calendar } from 'antd';
 
 export default function Calendar_fun(){
+    let dayEvent = [
+        {
+            year: 2024,
+            month: 8,
+            day: 24,
+            type: "success",
+            content: "Example 1"
+        },
+        {
+            year: 2024,
+            month: 8,
+            day: 25,
+            type: "success",
+            content: "Example 2"
+        },
+        {
+            year: 2024,
+            month: 9,
+            day: 15,
+            type: "success",
+            content: "Example 3"
+        },
+        {
+            year: 2023,
+            month: 9,
+            day: 15,
+            type: "success",
+            content: "Example 4"
+        }
+    ]
     const getListData = (value) => {
-        let listData;
-        switch (value.date()) {
-            case 8:
-                listData = [
-                    {
-                        type: 'warning',
-                        content: 'This is warning event.',
-                    },
-                    {
-                        type: 'success',
-                        content: 'This is usual event.',
-                    },
-                    {
-                        type: 'success',
-                        content: 'This is usual event.',
-                    },
-                ];
-                break;
-            case 10:
-                listData = [
-                    {
-                        type: 'warning',
-                        content: 'This is warning event.',
-                    },
-                    {
-                        type: 'success',
-                        content: 'This is usual event.',
-                    },
-                    {
-                        type: 'error',
-                        content: 'This is error event.',
-                    },
-                ];
-                break;
-            case 15:
-                listData = [
-                    {
-                        type: 'warning',
-                        content: 'This is warning event',
-                    },
-                    {
-                        type: 'success',
-                        content: 'This is very long usual event......',
-                    },
-                    {
-                        type: 'error',
-                        content: 'This is error event 1.',
-                    },
-                    {
-                        type: 'error',
-                        content: 'This is error event 2.',
-                    },
-                    {
-                        type: 'error',
-                        content: 'This is error event 3.',
-                    },
-                    {
-                        type: 'error',
-                        content: 'This is error event 4.',
-                    },
-                ];
-                break;
-            default:
-        }
+       const listData = dayEvent.filter(event =>
+           event.year === value.year() &&
+           event.month === value.month() &&
+           event.day === value.date()
+       );
         return listData || [];
-    };
-    const getMonthData = (value) => {
-        if (value.month() === 8) {
-            return 1394;
-        }
-    };
-    const monthCellRender = (value) => {
-        const num = getMonthData(value);
-        return num ? (
-            <div className="notes-month">
-                <section>{num}</section>
-                <span>Backlog number</span>
-            </div>
-        ) : null;
     };
     const dateCellRender = (value) => {
         const listData = getListData(value);
@@ -95,12 +52,16 @@ export default function Calendar_fun(){
             </ul>
         );
     };
-    const cellRender = (current, info) => {
-        if (info.type === 'date') return dateCellRender(current);
-        if (info.type === 'month') return monthCellRender(current);
-        return info.originNode;
-    };
-    return <Calendar cellRender={cellRender} />;
+    return (
+        <div>
+            <style>{`
+        .ant-picker-calendar-full .ant-picker-calendar-header .ant-radio-group {
+          display: none;
+        }
+      `}</style>
+            <Calendar dateCellRender={dateCellRender} />
+        </div>
+    );
 };
 
 
