@@ -6,4 +6,6 @@ const user = {
     password: "$2a$10$LCz9thl8mz13hLaXT0Ee6eP8dvbAvbY5NhyCfBWe9AfKl4/EBwvtG"    // admin
 };
 
-module.exports = user;
+const users = [user];
+
+module.exports = users;
