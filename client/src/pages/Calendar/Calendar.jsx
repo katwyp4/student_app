@@ -1,40 +1,86 @@
-import React, { useEffect } from 'react';
-import {Badge, Calendar, ConfigProvider} from 'antd';
+import React, {useEffect, useState} from 'react';
+import {Badge, Calendar, ConfigProvider, Modal} from 'antd';
 import { BiArrowBack } from "react-icons/bi";
 import { useNavigate } from 'react-router-dom';
+import plPl from 'antd/es/locale/pl_PL'
+import dayjs from 'dayjs';
+import 'dayjs/locale/pl';
+dayjs.locale('pl');
 
 let dayEvent = [
     {
         year: 2024,
-        month: 8,
-        day: 24,
+        month: 5,
+        day: 21,
         type: "success",
-        content: "Example 1"
+        content: "Example 0",
+        details: "Cos tam cos tam"
     },
     {
         year: 2024,
-        month: 8,
-        day: 25,
+        month: 5,
+        day: 21,
         type: "success",
-        content: "Example 2"
+        content: "Example 0.1",
+        details: "Cos tam cos tam"
     },
     {
         year: 2024,
         month: 9,
+        day: 24,
+        type: "success",
+        content: "Example 1",
+        details: "Cos tam cos tam2222"
+    },
+    {
+        year: 2024,
+        month: 9,
+        day: 25,
+        type: "success",
+        content: "Example 2",
+        details: "Cos tam cos tam2222333"
+    },
+    {
+        year: 2024,
+        month: 10,
         day: 15,
         type: "success",
-        content: "Example 3"
+        content: "Example 3",
+        details: "Cos tam cos tam1243rwer"
     },
     {
         year: 2023,
         month: 9,
         day: 15,
         type: "success",
-        content: "Example 4"
+        content: "Example 4",
+        details: "Cos tam cos tam LOREM"
     }
 ]
 export default function Calendar_fun(){
     let navigate = useNavigate();
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedDay, setSelectedDay] = useState(null);
+    const [selectedMonth, setSelectedMonth] = useState(null);
+    const [selectedMonthTxt, setSelectedMonthTxt] = useState(null);
+    const [selectedYear, setSelectedYear] = useState(null);
+
+    const handleOk = () => {
+        setIsModalOpen(false);
+    };
+
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
+
+    const onSelect = (value) => {
+        if(selectedMonth===value.month()+1 && selectedYear === value.year()) setIsModalOpen(true);
+        setSelectedDay(value.date());
+        setSelectedMonth(value.month()+1);
+        setSelectedMonthTxt(value.format('MMMM'));
+        setSelectedYear(value.year());
+
+    };
 
     useEffect(() => {
         document.body.style.background = '#f5f5f5'
@@ -45,11 +91,11 @@ export default function Calendar_fun(){
     };
 
     const getListData = (value) => {
-       const listData = dayEvent.filter(event =>
-           event.year === value.year() &&
-           event.month === value.month() &&
-           event.day === value.date()
-       );
+        const listData = dayEvent.filter(event =>
+            event.year === value.year() &&
+            event.month === (value.month()+1) &&
+            event.day === value.date()
+        );
         return listData || [];
     };
     const dateCellRender = (value) => {
@@ -57,22 +103,27 @@ export default function Calendar_fun(){
         return (
             <ul className="events">
                 {listData.map((item) => (
-                    <li key={item.content}>
-                        <Badge status={item.type} text={item.content} />
-                    </li>
+                    <Badge status={item.type} text={item.content}/>
                 ))}
             </ul>
         );
     };
+    const cellRender = (current) => {
+        return dateCellRender(current);
+    };
     return (
-        <ConfigProvider
-            theme={{
-                components: {
-                    Calendar: {
-                        fullBg: '#f5f5f5',
-                    },
-                },
-            }}
+        <ConfigProvider locale={plPl}
+                        theme={{
+                            components: {
+                                Calendar: {
+                                    fullBg: '#f5f5f5',
+
+                                },
+                            },
+                            token: {
+                                controlHeightSM: 10,
+                            },
+                        }}
         >
             <style>{`
         .ant-picker-calendar-full .ant-picker-calendar-header .ant-radio-group {
@@ -102,14 +153,20 @@ export default function Calendar_fun(){
       `}</style>
             <div className="calendar-header">
                 <div className="back-button" onClick={handleBackToMenu}>
-                    <BiArrowBack />
+                    <BiArrowBack/>
                 </div>
-                Kalendarz</div>
-            <Calendar dateCellRender={dateCellRender}/>
-
+                Kalendarz
+            </div>
+            <Calendar cellRender={cellRender} onSelect={onSelect}/>
+            <Modal title={selectedDay && selectedMonthTxt ? `${selectedDay} ${selectedMonthTxt}` : 'Basic Modal'}
+                   open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+                {getListData(dayjs(`${selectedYear}-${selectedMonth}-${selectedDay}`)).map((event, index) => (
+                    <div key={index}>
+                        <p>{event.content}</p>
+                        <p>{event.details}</p>
+                    </div>
+                ))}
+            </Modal>
         </ConfigProvider>
     );
 };
-
-
-
