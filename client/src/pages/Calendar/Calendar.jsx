@@ -144,8 +144,8 @@ export default function Calendar_fun(){
         
         .back-button {
             position: absolute;
-            top: 20px;
-            left: 20px;
+            top: 50px;
+            left: 30px;
             cursor: pointer;
             font-size: 24px;
             color: #FFFFFF;
