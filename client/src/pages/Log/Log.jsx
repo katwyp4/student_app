@@ -23,10 +23,15 @@ export default function Log(){
         try{
             if(!values.username && !values.password){ throw new Error('Brakuje danych.'); }
             const result = await signin(values.username, values.password);
-            if(result){ notify('success', 'Sukces!', `Operacja logowania przebiegła pomyślnie.`); }
+            if(result) {
+                notify('success', 'Sukces!', `Operacja logowania przebiegła pomyślnie.`);
+                setTimeout(() => {
+                    navigate("/menu");
+                }, 1000); // Przekierowanie po 2 sekundach}
+            }
             else { throw new Error('Logowanie się nie powiodło spróbuj ponownie.'); }
         }catch(error){
-            notify('error', 'Przykro nam :(', `Operacja logowania nie przebiegła pomyślnie: ${error}`);
+            notify('error', 'Przykro nam :(', `Operacja logowania nie przebiegła pomyślnie`);
         }
     };
 
@@ -61,7 +66,7 @@ export default function Log(){
                 backgroundColor: 'white',
                 borderRadius: '20px',
                 marginTop: '50px',
-                padding: '15px',
+                padding: '30px',
                 margin: '-70px',
                 zIndex: '2',// Wartość z-index dla tabeli
                 position: 'relative'// Możesz usunąć tę właściwość, jeśli nie ma konfliktów z innymi elementami
