@@ -13,50 +13,114 @@ let dayEvent = [
         month: 5,
         day: 21,
         type: "success",
-        content: "Example 0",
-        details: "Cos tam cos tam"
+        content: "Dzień otwarty z firmą KILARGO",
+        details: "Dlaczego warto wziąć udział?\n" +
+            "\n" +
+            "Poznaj świat lodów Kilargo - Dowiedz się, jak powstają naszej wyjątkowe produkty i jakie technologie wykorzystujemy do produkcji.\n" +
+            "Ścieżki kariery - Zdobądź informacje o możliwościach rozwoju zawodowego w naszej firmie. Poznaj aktualne oferty pracy.\n" +
+            "Networking - Spotkaj się z przedstawicielem firmy Kilargo, zadaj pytania i zostaw swoje CV.\n" +
+            "Degustacja lodów - Skosztuj naszych pysznych lodów i przekonaj się, że nikt nie robi lepszych!\n" +
+            "Zapraszamy!\n" +
+            "Miejsce wydarzenia: wejście do budynku A2 Wydziału Biotechnologii i Nauk o Żywności, od strony ul. Stefanowskiego - w przypadku niepogody szukaj nas w środku!\n" +
+            "\nGodzina: 10:00 - 15:00\n" +
+            "Organizator: Kilargo\n"
     },
     {
         year: 2024,
         month: 5,
         day: 21,
         type: "success",
-        content: "Example 0.1",
-        details: "Cos tam cos tam"
+        content: "Szkolenie \"Zarządzanie finansami w biznesie\"",
+        details: "Szkolenie  zostało tak zaprojektowane, aby dostarczyć uczestnikom wiedzy i umiejętności niezbędnych do efektywnego zarządzania finansami w sektorze biznesowym. Program skierowany jest do studentów, którzy chcą mądrze zarządzać finansami w swojej firmie.\n" +
+            "Celem szkolenia jest zapewnienie uczestnikom gruntownego zrozumienia kluczowych aspektów finansowych, niezbędnych do prowadzenia i rozwijania działalności gospodarczej. Uczestnicy nauczą się interpretować dane finansowe, przeprowadzać analizy finansowe, tworzyć skuteczne strategie budżetowania oraz planowania finansowego. Szkolenie obejmie również zagadnienia związane z zarządzaniem przepływami pieniężnymi i oceną ryzyka finansowego. Jego przedmiotem są także metody wyceny i zarządzania inwestycjami.\n" +
+            "Miejsce wydarzenia: Centrum Technologii Informatycznych, bud. B-19, Wólczańska 217/223\n" +
+            "Godzina: 14:00 - 16:00\n" +
+            "Organizator: Biuro Karier\n" +
+            "Cena wejścia: bezpłatne"
     },
     {
         year: 2024,
         month: 9,
         day: 24,
         type: "success",
-        content: "Example 1",
-        details: "Cos tam cos tam2222"
+        content: "Szkolenie \"Zarządzanie finansami w biznesie\"",
+        details: "Szkolenie  zostało tak zaprojektowane, aby dostarczyć uczestnikom wiedzy i umiejętności niezbędnych do efektywnego zarządzania finansami w sektorze biznesowym. Program skierowany jest do studentów, którzy chcą mądrze zarządzać finansami w swojej firmie.\n" +
+            "Celem szkolenia jest zapewnienie uczestnikom gruntownego zrozumienia kluczowych aspektów finansowych, niezbędnych do prowadzenia i rozwijania działalności gospodarczej. Uczestnicy nauczą się interpretować dane finansowe, przeprowadzać analizy finansowe, tworzyć skuteczne strategie budżetowania oraz planowania finansowego. Szkolenie obejmie również zagadnienia związane z zarządzaniem przepływami pieniężnymi i oceną ryzyka finansowego. Jego przedmiotem są także metody wyceny i zarządzania inwestycjami.\n" +
+            "Miejsce wydarzenia: Centrum Technologii Informatycznych, bud. B-19, Wólczańska 217/223\n" +
+            "Godzina: 14:00 - 16:00\n" +
+            "Organizator: Biuro Karier\n" +
+            "Cena wejścia: bezpłatne"
     },
     {
         year: 2024,
         month: 9,
         day: 25,
         type: "success",
-        content: "Example 2",
-        details: "Cos tam cos tam2222333"
+        content: "Dzień otwarty z firmą KILARGO",
+        details: "Dlaczego warto wziąć udział?\n" +
+            "\n" +
+            "Poznaj świat lodów Kilargo - Dowiedz się, jak powstają naszej wyjątkowe produkty i jakie technologie wykorzystujemy do produkcji.\n" +
+            "Ścieżki kariery - Zdobądź informacje o możliwościach rozwoju zawodowego w naszej firmie. Poznaj aktualne oferty pracy.\n" +
+            "Networking - Spotkaj się z przedstawicielem firmy Kilargo, zadaj pytania i zostaw swoje CV.\n" +
+            "Degustacja lodów - Skosztuj naszych pysznych lodów i przekonaj się, że nikt nie robi lepszych!\n" +
+            "Zapraszamy!\n" +
+            "Miejsce wydarzenia: wejście do budynku A2 Wydziału Biotechnologii i Nauk o Żywności, od strony ul. Stefanowskiego - w przypadku niepogody szukaj nas w środku!\n" +
+            "\nGodzina: 10:00 - 15:00\n" +
+            "Organizator: Kilargo\n"
     },
     {
         year: 2024,
         month: 10,
         day: 15,
         type: "success",
-        content: "Example 3",
-        details: "Cos tam cos tam1243rwer"
+        content: "Dzień otwarty z firmą KILARGO",
+        details: "Dlaczego warto wziąć udział?\n" +
+            "\n" +
+            "Poznaj świat lodów Kilargo - Dowiedz się, jak powstają naszej wyjątkowe produkty i jakie technologie wykorzystujemy do produkcji.\n" +
+            "Ścieżki kariery - Zdobądź informacje o możliwościach rozwoju zawodowego w naszej firmie. Poznaj aktualne oferty pracy.\n" +
+            "Networking - Spotkaj się z przedstawicielem firmy Kilargo, zadaj pytania i zostaw swoje CV.\n" +
+            "Degustacja lodów - Skosztuj naszych pysznych lodów i przekonaj się, że nikt nie robi lepszych!\n" +
+            "Zapraszamy!\n" +
+            "Miejsce wydarzenia: wejście do budynku A2 Wydziału Biotechnologii i Nauk o Żywności, od strony ul. Stefanowskiego - w przypadku niepogody szukaj nas w środku!\n" +
+            "\nGodzina: 10:00 - 15:00\n" +
+            "Organizator: Kilargo\n"
     },
     {
         year: 2023,
         month: 9,
         day: 15,
         type: "success",
-        content: "Example 4",
-        details: "Cos tam cos tam LOREM"
+        content: "Dzień otwarty z firmą KILARGO",
+        details: "Dlaczego warto wziąć udział?\n" +
+            "\n" +
+            "Poznaj świat lodów Kilargo - Dowiedz się, jak powstają naszej wyjątkowe produkty i jakie technologie wykorzystujemy do produkcji.\n" +
+            "Ścieżki kariery - Zdobądź informacje o możliwościach rozwoju zawodowego w naszej firmie. Poznaj aktualne oferty pracy.\n" +
+            "Networking - Spotkaj się z przedstawicielem firmy Kilargo, zadaj pytania i zostaw swoje CV.\n" +
+            "Degustacja lodów - Skosztuj naszych pysznych lodów i przekonaj się, że nikt nie robi lepszych!\n" +
+            "Zapraszamy!\n" +
+            "Miejsce wydarzenia: wejście do budynku A2 Wydziału Biotechnologii i Nauk o Żywności, od strony ul. Stefanowskiego - w przypadku niepogody szukaj nas w środku!\n" +
+            "\nGodzina: 10:00 - 15:00\n" +
+            "Organizator: Kilargo\n"
     }
 ]
+
+function EventDetails({ details }) {
+    const formattedDetails = details.split('\n').map((line, index) => {
+        const colonIndex = line.indexOf(':');
+        if (colonIndex !== -1) {
+            const label = line.substring(0, colonIndex + 1);
+            const rest = line.substring(colonIndex + 1);
+            return <p key={index}><strong>{label}</strong>{rest}</p>;
+        }
+        return <p key={index}>{line}</p>;
+    });
+
+    return (
+        <div style={{ whiteSpace: 'pre-line' }}>
+            {formattedDetails}
+        </div>
+    );
+}
 export default function Calendar_fun(){
     let navigate = useNavigate();
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -150,6 +214,7 @@ export default function Calendar_fun(){
             font-size: 24px;
             color: #FFFFFF;
         }
+        
       `}</style>
             <div className="calendar-header">
                 <div className="back-button" onClick={handleBackToMenu}>
@@ -162,8 +227,8 @@ export default function Calendar_fun(){
                    open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
                 {getListData(dayjs(`${selectedYear}-${selectedMonth}-${selectedDay}`)).map((event, index) => (
                     <div key={index}>
-                        <p>{event.content}</p>
-                        <p>{event.details}</p>
+                        <h2>{event.content}</h2>
+                        <EventDetails details={event.details}/>
                     </div>
                 ))}
             </Modal>
