@@ -22,6 +22,7 @@ export default function Register() {
             }
             const result = await signup(values.name, values.surname, values.email, values.password);
             notify('success', 'Sukces!', 'Rejestracja przebiegła pomyślnie.');
+            navigate('/'); // Redirect to the login page after successful registration
         } catch (error) {
             notify('error', 'Przykro nam :(', `Rejestracja nie powiodła się: ${error.message}`);
         }
