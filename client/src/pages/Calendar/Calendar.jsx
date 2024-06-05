@@ -190,10 +190,20 @@ export default function Calendar_fun(){
                         }}
         >
             <style>{`
-        .ant-picker-calendar-full .ant-picker-calendar-header .ant-radio-group {
+        .ant-radio-group {
           display: none;
         }
+        .ant-picker-calendar-full .ant-picker-calendar-header {
+            position: sticky;
+            top: 0px;
+            z-index: 3;
+            background-color: #f5f5f5; 
+        }
+        
         .calendar-header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
             height: 130px;
             background-color: #882220;
             display: flex;
@@ -215,6 +225,12 @@ export default function Calendar_fun(){
             color: #FFFFFF;
         }
         
+        .calendar-content {
+            height: calc(100vh - 130px);
+            overflow-y: auto;
+        }
+        
+        
       `}</style>
             <div className="calendar-header">
                 <div className="back-button" onClick={handleBackToMenu}>
@@ -222,7 +238,9 @@ export default function Calendar_fun(){
                 </div>
                 Kalendarz
             </div>
-            <Calendar cellRender={cellRender} onSelect={onSelect}/>
+            <div className="calendar-content">
+                <Calendar cellRender={cellRender} onSelect={onSelect}/>
+            </div>
             <Modal title={selectedDay && selectedMonthTxt ? `${selectedDay} ${selectedMonthTxt}` : 'Basic Modal'}
                    open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
                 {getListData(dayjs(`${selectedYear}-${selectedMonth}-${selectedDay}`)).map((event, index) => (
