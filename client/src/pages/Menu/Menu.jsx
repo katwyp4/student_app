@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Form, Button, Typography } from "antd";
+import { AiOutlineLogout } from "react-icons/ai"; // Importujemy ikonę wylogowania
 
 const { Title } = Typography;
 
@@ -27,6 +28,9 @@ export default function Menu() {
                 zIndex: '1',
                 position: 'relative'
             }}>
+                <Link to="/"> {/* Przekierowanie do strony wylogowania */}
+                    <AiOutlineLogout style={{ position: 'absolute', top: '20px', left: '35px', fontSize: '24px', color: 'white', cursor: 'pointer' }} />
+                </Link>
                 <img src={"logowikamp.png"} alt="Logo" style={{ height: '70px', marginBottom: '20px' }} />
             </div>
             <div style={{
