@@ -1,6 +1,8 @@
 import React, { useCallback, useRef, useEffect } from 'react';
 import { Button, Input, Space, notification, Card, Avatar } from 'antd';
 import { fetchPost, addPost } from '../../services/chat.service';
+import { useNavigate } from 'react-router-dom';
+import { BiArrowBack } from "react-icons/bi";
 
 const { Meta } = Card;
 
@@ -11,6 +13,7 @@ export default function Chat() {
     const [api, contextHolder] = notification.useNotification();
     const currentUser = 'currentUser'; // Replace with actual current user logic
     const messagesEndRef = useRef(null);
+    const navigate = useNavigate();
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -70,6 +73,10 @@ export default function Chat() {
         }
     };
 
+    const goToMenu = () => {
+        navigate('/menu');
+    };
+
     document.body.style.backgroundColor = "#D3D3D3";
 
     return (
@@ -85,6 +92,9 @@ export default function Chat() {
                 zIndex: '1',
                 position: 'relative'
             }}>
+                <div className="back-button" onClick={goToMenu} style={{ position: 'absolute', top: 20, left: 20, cursor: 'pointer', fontSize: 24, color: '#FFFFFF' }}>
+                    <BiArrowBack/>
+                </div>
                 <h1 style={{margin: 0, color: 'white', fontSize: '29px', marginTop: '20px', fontWeight: 'normal'}}>Chat grupowy</h1>
                 <h1 style={{margin: 0, color: 'white', fontSize: '17px', marginTop: '30px', fontWeight: 'normal'}}>Politechnika Łódzka</h1>
             </div>
