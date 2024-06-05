@@ -4,8 +4,8 @@
 Aplikacja oferuje szereg funkcjonalności, które ułatwiają organizację czasu i komunikację w środowisku akademickim:
 - **Logowanie:** Autoryzacja użytkowników do systemu.
 - **Rejestracja użytkownika:** Możliwość tworzenia nowego konta użytkownika.
-- **Dostęp do kalendarza:** Użytkownicy mogą przeglądać swoje wydarzenia i terminy.
-- **Dostęp do planu zajęć:** Możliwość wyświetlenia aktualnego planu zajęć.
+- **Dostęp do kalendarza:** Użytkownicy mogą przeglądać  wydarzenia i terminy.
+- **Dostęp do planu zajęć:** Możliwość wyświetlenia  planu zajęć dodatkowych.
 - **Dostęp do chatu grupowego:** Funkcja komunikacji z innymi użytkownikami aplikacji.
 - **Dostęp do map placówki:** Wyświetlanie map, które pomagają w orientacji po terenie uczelni.
 
