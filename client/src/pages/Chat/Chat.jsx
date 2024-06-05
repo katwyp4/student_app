@@ -1,15 +1,20 @@
-import React, { useCallback, useRef, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Button, Input, Space, notification, Card, Avatar } from 'antd';
+import { UserOutlined } from '@ant-design/icons';
 import { fetchPost, addPost } from '../../services/chat.service';
 import { useNavigate } from 'react-router-dom';
 import { BiArrowBack } from "react-icons/bi";
 
 const { Meta } = Card;
 
+const url = 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg';
+
+const colorList = ['#87d068', '#fde3cf', '#f56a00', '#7265e6', '#ffbf00', '#00a2ae', '#ff7f50', '#6495ed'];
+
 export default function Chat() {
-    const [avatars, setAvatars] = React.useState([]);
-    const [posts, setPosts] = React.useState([]);
-    const [message, setMessage] = React.useState('');
+    const [avatars, setAvatars] = useState([]);
+    const [posts, setPosts] = useState([]);
+    const [message, setMessage] = useState('');
     const [api, contextHolder] = notification.useNotification();
     const currentUser = 'currentUser'; // Replace with actual current user logic
     const messagesEndRef = useRef(null);
@@ -29,7 +34,7 @@ export default function Chat() {
         });
     }, [api]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         const init = async () => {
             try {
                 const data = await fetchPost();
@@ -40,12 +45,12 @@ export default function Chat() {
         };
 
         init();
-    }, [setPosts, notify]);
+    }, [notify]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         const newAvatars = posts.reduce((acc, post, index) => {
             if (!avatars.find(avatar => avatar.author === post.author)) {
-                acc.push({ author: post.author, src: `https://api.dicebear.com/7.x/miniavs/svg?seed=${index}` });
+                acc.push({ author: post.author, color: colorList[index % colorList.length] });
             }
             return acc;
         }, []);
@@ -93,17 +98,17 @@ export default function Chat() {
                 position: 'relative'
             }}>
                 <div className="back-button" onClick={goToMenu} style={{ position: 'absolute', top: 20, left: 20, cursor: 'pointer', fontSize: 24, color: '#FFFFFF' }}>
-                    <BiArrowBack/>
+                    <BiArrowBack />
                 </div>
-                <h1 style={{margin: 0, color: 'white', fontSize: '29px', marginTop: '20px', fontWeight: 'normal'}}>Chat grupowy</h1>
-                <h1 style={{margin: 0, color: 'white', fontSize: '17px', marginTop: '30px', fontWeight: 'normal'}}>Politechnika Łódzka</h1>
+                <h1 style={{ margin: 0, color: 'white', fontSize: '29px', marginTop: '20px', fontWeight: 'normal' }}>Chat grupowy</h1>
+                <h1 style={{ margin: 0, color: 'white', fontSize: '17px', marginTop: '30px', fontWeight: 'normal' }}>Politechnika Łódzka</h1>
             </div>
             <div style={{ flex: 1, overflowY: "auto", display: 'flex', flexDirection: 'column', alignItems: 'center', overflowX: 'hidden' }}>
                 <Space direction="vertical" style={{ padding: 20, width: '100%', alignItems: 'center' }}>
                     {contextHolder}
                     {posts.map((post, index) => {
-                        const avatar = avatars.find(avatar => avatar.author === post.author);
-                        const src = avatar ? avatar.src : `https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`;
+                        const avatarData = avatars.find(avatar => avatar.author === post.author);
+                        const avatarColor = avatarData ? avatarData.color : colorList[index % colorList.length];
                         const isCurrentUser = post.author === currentUser;
 
                         return (
@@ -113,7 +118,10 @@ export default function Chat() {
                                     actions={[post.timestamp]}
                                 >
                                     <Meta
-                                        avatar={<Avatar src={src} />}
+                                        avatar={<Avatar
+                                            style={{ backgroundColor: avatarColor }}
+                                            icon={<UserOutlined />}
+                                        />}
                                         title={post.author}
                                         description={post.message}
                                     />
