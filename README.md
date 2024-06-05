@@ -38,7 +38,6 @@ Projekt został zbudowany przy użyciu:
   - views/: Domyślne widoki aplikacji.
 
 ### Informacje dodatkowe
-- SQLite: Używana jako system zarządzania bazą danych.
 - Axios: Biblioteka służąca do wykonywania żądań HTTP między klientem a serwerem.
 - AntDesign: Biblioteka zawierająca bogatą kolekcję gotowych, responsywnyh komponentów.
 - Express.js: Framework do obsługi backendu.
