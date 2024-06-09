@@ -1,11 +1,28 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { Form, Button, Typography } from "antd";
 import { AiOutlineLogout } from "react-icons/ai"; // Importujemy ikonę wylogowania
 
 const { Title } = Typography;
 
 export default function Menu() {
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            navigate("/", { replace: true });
+        }
+    }, [navigate]);
+
+    const logout = () => {
+        // Usunięcie tokena z localStorage
+        localStorage.removeItem("token");
+
+        // Przekierowanie na stronę logowania z zamianą historii
+        navigate("/", { replace: true });
+    };
+
     return (
         <div style={{
             width: '100dvw',
@@ -28,9 +45,17 @@ export default function Menu() {
                 zIndex: '1',
                 position: 'relative'
             }}>
-                <Link to="/"> {/* Przekierowanie do strony wylogowania */}
-                    <AiOutlineLogout style={{ position: 'absolute', top: '20px', left: '35px', fontSize: '24px', color: 'white', cursor: 'pointer' }} />
-                </Link>
+                <AiOutlineLogout
+                    onClick={logout}
+                    style={{
+                        position: 'absolute',
+                        top: '20px',
+                        left: '35px',
+                        fontSize: '24px',
+                        color: 'white',
+                        cursor: 'pointer'
+                    }}
+                />
                 <img src={"logowikamp.png"} alt="Logo" style={{ height: '70px', marginBottom: '20px' }} />
             </div>
             <div style={{
