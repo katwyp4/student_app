@@ -21,6 +21,7 @@ let isAdmin = true;
 
 let Events = [
     {
+        key: 0,
         Day: 0,
         Title: "Podstawy inżynerii oprogramowania",
         Place: "i24 B19 403",
@@ -31,6 +32,7 @@ let Events = [
     },
 
     {
+        key: 1,
         Day: 3,
         Title: "Systemy wbudowane",
         Place: "k22 B18 I.M",
@@ -41,6 +43,7 @@ let Events = [
     },
 
     {
+        key: 2,
         Day: 0,
         Title: "Jezyk Obcy",
         Place: "_B24",
@@ -51,6 +54,7 @@ let Events = [
     },
 
     {
+        key: 3,
         Day: 1,
         Title: "Bazy Danych",
         Place: "E2",
@@ -60,6 +64,7 @@ let Events = [
         Type: "w",
     },
     {
+        key: 4,
         Day: 1,
         Title: "Komunikacja człowiek-komputer",
         Place: "E2",
@@ -69,6 +74,7 @@ let Events = [
         Type: "w",
     },
     {
+        key: 5,
         Day: 1,
         Title: "Podstawy inżynerii oprogramowania",
         Place: "E2",
@@ -78,6 +84,7 @@ let Events = [
         Type: "w",
     },
     {
+        key: 6,
         Day: 1,
         Title: "Programowanie obiektowe || (Java)",
         Place: "Zdalnie",
@@ -87,6 +94,7 @@ let Events = [
         Type: "w",
     },
     {
+        key: 7,
         Day: 2,
         Title: "Automatyzacja obliczeń inżynierskich",
         Place: "i24 E110",
@@ -96,6 +104,7 @@ let Events = [
         Type: "l",
     },
     {
+        key: 8,
         Day: 2,
         Title: "Komunikacja człowiek-komputer",
         Place: "i24 E110",
@@ -105,6 +114,7 @@ let Events = [
         Type: "p",
     },
     {
+        key: 9,
         Day: 3,
         Title: "Bazy Danych",
         Place: "i25 IBM",
@@ -114,6 +124,7 @@ let Events = [
         Type: "l",
     },
     {
+        key: 10,
         Day: 3,
         Title: "Programowanie obiektowe || (Java)",
         Place: "k22 B18 I.C",
@@ -123,6 +134,7 @@ let Events = [
         Type: "l",
     },
     {
+        key: 11,
         Day: 4,
         Title: "Systemy wbudowane",
         Place: "k22 B18 A2",
@@ -132,6 +144,7 @@ let Events = [
         Type: "w",
     },
     {
+        key: 12,
         Day: 4,
         Title: "Sieci komputerowe",
         Place: "E1",
@@ -141,6 +154,7 @@ let Events = [
         Type: "w",
     },
     {
+        key: 13,
         Day: 4,
         Title: "Automatyzacja obliczeń inżynierskich",
         Place: "E2",
@@ -150,6 +164,7 @@ let Events = [
         Type: "w",
     },
     {
+        key: 14,
         Day: 4,
         Title: "Sieci komputerowe",
         Place: "i24 311",
@@ -236,7 +251,7 @@ export default function Schedule(){
     function Distance(Items, item){
         let i;
         for(i = 0; i<Items.length;i++){
-            if(Items[i].Title===item.Title && Items[i].Type===item.Type){
+            if(Items[i].key===item.key){
                 if(i===0){
                     return (item.From-8)*(96/12);}
                 else if(Items[i-1].Day===item.Day) {
@@ -301,7 +316,7 @@ export default function Schedule(){
             });
             let i;
             for(i=0; i<Events.length;i++){
-                if(Events[i].Day === event.Day && Events[i].From === event.From) {
+                if(Events[i].key === event.key) {
                     break;
                 }
             }
@@ -331,7 +346,7 @@ export default function Schedule(){
         if(err_code!==0) error(err_code);
         else {
             if(isEditMode === true) {
-                if(Events[ElementToDelete].Day === event.Day && Events[ElementToDelete].To === To && Events[ElementToDelete].From === From && Events[ElementToDelete].Type === event.Type && Events[ElementToDelete].Lektor === event.Lektor && Events[ElementToDelete].Title === event.Title && Events[ElementToDelete].Place === event.Place){
+                if(Events[ElementToDelete].key === event.key){
                     isEditMode = false;
                     setIsModalOpen(false);
                     return;
@@ -341,6 +356,7 @@ export default function Schedule(){
             }
             else openNotification(4);
             Events.push({
+                key: Events.length,
                 Day: event.Day,
                 Title: event.Title,
                 Place: event.Place,
@@ -370,6 +386,19 @@ export default function Schedule(){
     const onFinish = (values) => {
         handleOk(values);
     };
+
+    const sortAndSetKeys = () => {
+        let i;
+        for(i = 0; i < Events.length; i++){
+            Events[i].key = i;
+        }
+        Events.sort(function(a,b){
+            if(a.Day < b.Day) return -1;
+            if(a.Day > b.Day) return 1;
+            if (a.From < b.From) return -1;
+            if (a.From > b.From) return 1;
+            return 0;})
+    }
 
     return (
         <ConfigProvider>
@@ -513,13 +542,14 @@ export default function Schedule(){
         }
         
       `}</style>
+            {sortAndSetKeys()}
             <div class="add_button" style={!isAdmin ? {display: `none`} : {}} onClick={showModal}>+</div>
             <div className="schedule-header">
                 <div className="back-button" onClick={handleBackToMenu}>
                     <BiArrowBack/>
                 </div>
                 <div class="title">
-                    Plany
+                    Plan zajęć
                 </div>
                 <div class="time">
                     <Row>
@@ -540,12 +570,7 @@ export default function Schedule(){
                     <Row>
                         <Col flex={`${(100/25)}%`}><div class="weekday"><span>{Days[RowIndex]}</span></div></Col>
                         {Events.filter(event => event.Day === RowIndex).map((event) => (
-                            <Col flex={`${(96 / 12) * (event.To - event.From)}%`} style={{marginLeft: `${Distance(Events.sort(function(a,b){
-                                    if(a.Day < b.Day) return -1;
-                                    if(a.Day > b.Day) return 1;
-                                    if (a.From < b.From) return -1;
-                                    if (a.From > b.From) return 1;
-                                    return 0;}), event)}%`}}>
+                            <Col flex={`${(96 / 12) * (event.To - event.From)}%`} style={{marginLeft: `${Distance(Events, event)}%`}}>
                                 <div className="cell" style={{
                                     border: `3px solid ${event.Type === "w" ? "#dbb404" : event.Type === "l" ? "#04b530" : event.Type === "lekt" ? "#04dbb7" : event.Type === "p" ? "#b504a0" : "gray"}`
                                 }}>
