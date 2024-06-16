@@ -1,6 +1,7 @@
 import {useNavigate} from "react-router-dom";
 import {BiArrowBack, BiEditAlt} from "react-icons/bi";
 import React, {useEffect, useState} from "react";
+import {addEvent, fetchEvent, deleteEvent} from "../../services/schedule.service";
 import {
     Button,
     Col,
@@ -17,148 +18,7 @@ import {
 } from "antd";
 import dayjs from "dayjs";
 
-let isAdmin = true;
-
-let Events = [
-    {
-        Day: 0,
-        Title: "Podstawy inżynerii oprogramowania",
-        Place: "i24 B19 403",
-        Lektor: "Kowalski J",
-        From: 12,
-        To: 14,
-        Type: "l",
-    },
-
-    {
-        Day: 3,
-        Title: "Systemy wbudowane",
-        Place: "k22 B18 I.M",
-        Lektor: "Kowalski J",
-        From: 8,
-        To: 11,
-        Type: "l",
-    },
-
-    {
-        Day: 0,
-        Title: "Jezyk Obcy",
-        Place: "_B24",
-        Lektor: "Kowalski J",
-        From: 8,
-        To: 10,
-        Type: "lekt",
-    },
-
-    {
-        Day: 1,
-        Title: "Bazy Danych",
-        Place: "E2",
-        Lektor: "Kowalski J",
-        From: 10,
-        To: 12,
-        Type: "w",
-    },
-    {
-        Day: 1,
-        Title: "Komunikacja człowiek-komputer",
-        Place: "E2",
-        Lektor: "Kowalski J",
-        From: 12,
-        To: 14,
-        Type: "w",
-    },
-    {
-        Day: 1,
-        Title: "Podstawy inżynerii oprogramowania",
-        Place: "E2",
-        Lektor: "Kowalski J",
-        From: 14,
-        To: 16,
-        Type: "w",
-    },
-    {
-        Day: 1,
-        Title: "Programowanie obiektowe || (Java)",
-        Place: "Zdalnie",
-        Lektor: "Kowalski J",
-        From: 17,
-        To: 19,
-        Type: "w",
-    },
-    {
-        Day: 2,
-        Title: "Automatyzacja obliczeń inżynierskich",
-        Place: "i24 E110",
-        Lektor: "Kowalski J",
-        From: 10,
-        To: 12,
-        Type: "l",
-    },
-    {
-        Day: 2,
-        Title: "Komunikacja człowiek-komputer",
-        Place: "i24 E110",
-        Lektor: "Kowalski J",
-        From: 12,
-        To: 14,
-        Type: "p",
-    },
-    {
-        Day: 3,
-        Title: "Bazy Danych",
-        Place: "i25 IBM",
-        Lektor: "Kowalski J",
-        From: 12,
-        To: 14,
-        Type: "l",
-    },
-    {
-        Day: 3,
-        Title: "Programowanie obiektowe || (Java)",
-        Place: "k22 B18 I.C",
-        Lektor: "Kowalski J",
-        From: 14,
-        To: 16,
-        Type: "l",
-    },
-    {
-        Day: 4,
-        Title: "Systemy wbudowane",
-        Place: "k22 B18 A2",
-        Lektor: "Kowalski J",
-        From: 8,
-        To: 10,
-        Type: "w",
-    },
-    {
-        Day: 4,
-        Title: "Sieci komputerowe",
-        Place: "E1",
-        Lektor: "Kowalski J",
-        From: 10,
-        To: 12,
-        Type: "w",
-    },
-    {
-        Day: 4,
-        Title: "Automatyzacja obliczeń inżynierskich",
-        Place: "E2",
-        Lektor: "Kowalski J",
-        From: 14,
-        To: 16,
-        Type: "w",
-    },
-    {
-        Day: 4,
-        Title: "Sieci komputerowe",
-        Place: "i24 311",
-        Lektor: "Kowalski J",
-        From: 16,
-        To: 18,
-        Type: "l",
-    },
-]
+let isAdmin;
 
 let isEditMode = false;
 let ElementToDelete;
@@ -166,48 +26,12 @@ let ElementToDelete;
 export default function Schedule(){
 
     let navigate = useNavigate();
-    const handleBackToMenu = () => {
-        navigate('/menu');
-    };
-
     const [api, contextHolder] = notification.useNotification();
-    const openNotification = (code) => {
-        if(code === 1){
-        const key = `open${Date.now()}`;
-        const btn = (
-            <Space>
-                <Button type="link" size="small" onClick={() => api.destroy()}>
-                    Nie
-                </Button>
-                <Button type="primary" size="small" onClick={() => {api.destroy(); deleteElement()}}>
-                    Tak
-                </Button>
-            </Space>
-        );
-        api.open({
-            message: 'Czy napewno chesz usunąć wydarzenie?',
-            btn,
-            key,
-            duration: 0,
-        });
-        }
-        else if(code === 2) {
-            api.success({
-                message: 'Usunięcie przebiegła pomyślnie',
-            })
-        }
-        else if(code === 3) {
-            api.success({
-                message: 'Edycja przebiegła pomyślnie',
-            })
-        }
-        else if(code === 4) {
-            api.success({
-                message: 'Dodanie przebiegło pomyślnie',
-            })
-        }
-    };
-
+    const Rows = new Array(5).fill(0);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [Events, setEvents] = useState([]);
+    const { Option } = Select;
+    const [form] = Form.useForm();
     let timeSlots = [
         "",
         "9:00",
@@ -231,12 +55,87 @@ export default function Schedule(){
         "Czw",
         "Pt"
     ]
-    const Rows = new Array(5).fill(0);
+
+    useEffect(() => {
+        const AdminsCheck = () => {
+            isAdmin = localStorage.getItem('email') === "admin@gmail.com";
+        }
+        AdminsCheck();
+    }, []);
+
+    useEffect(() => {
+        const init = async () => {
+            try {
+                const data = await fetchEvent();
+                setEvents(data);
+            } catch (error) {
+                openNotification(5);
+            }
+        };
+
+        init();
+    }, []);
+
+    const handleBackToMenu = () => {
+        navigate('/menu');
+    };
+
+    const openNotification = (code) => {
+        if(code === 1){
+            const key = `open${Date.now()}`;
+            const btn = (
+                <Space>
+                    <Button type="link" size="small" onClick={() => api.destroy()}>
+                        Nie
+                    </Button>
+                    <Button type="primary" size="small" onClick={() => {api.destroy(); deleteElement()}}>
+                        Tak
+                    </Button>
+                </Space>
+            );
+            api.open({
+                message: 'Czy napewno chesz usunąć wydarzenie?',
+                btn,
+                key,
+                duration: 0,
+            });
+        }
+        else if(code === 2) {
+            api.success({
+                message: 'Usunięcie przebiegło pomyślnie',
+            })
+        }
+        else if(code === 3) {
+            api.success({
+                message: 'Edycja przebiegła pomyślnie',
+            })
+        }
+        else if(code === 4) {
+            api.success({
+                message: 'Dodanie przebiegło pomyślnie',
+            })
+        }
+        else if(code === 5) {
+            api.error({
+                message: 'Pobieranie planu nie powiodło się',
+            })
+        }
+        else if(code === 6) {
+            api.error({
+                message: 'Usunięcie wydarzenia nie powiodło się',
+            })
+        }
+        else if(code === 7) {
+            api.error({
+                message: 'Edycja wydarzenia nie powiodła się',
+            })
+        }
+    };
 
     function Distance(Items, item){
         let i;
         for(i = 0; i<Items.length;i++){
-            if(Items[i].Title===item.Title && Items[i].Type===item.Type){
+            if(Items[i].key===item.key){
                 if(i===0){
                     return (item.From-8)*(96/12);}
                 else if(Items[i-1].Day===item.Day) {
@@ -287,8 +186,6 @@ export default function Schedule(){
         }
     };
 
-
-    const [isModalOpen, setIsModalOpen] = useState(false);
     const showModal = (event) => {
         if (isEditMode === true) {
             form.setFieldsValue({
@@ -301,17 +198,18 @@ export default function Schedule(){
             });
             let i;
             for(i=0; i<Events.length;i++){
-                if(Events[i].Day === event.Day && Events[i].From === event.From) {
+                if(Events[i].key === event.key) {
                     break;
                 }
             }
             ElementToDelete = i;
+            console.log(ElementToDelete);
         } else {
             form.resetFields();
         }
         setIsModalOpen(true);
     };
-    const handleOk = (event) => {
+    const handleOk =  async (event) => {
         let it;
         let err_code = 0;
         let From = event.Time[0].$H;
@@ -331,41 +229,54 @@ export default function Schedule(){
         if(err_code!==0) error(err_code);
         else {
             if(isEditMode === true) {
-                if(Events[ElementToDelete].Day === event.Day && Events[ElementToDelete].To === To && Events[ElementToDelete].From === From && Events[ElementToDelete].Type === event.Type && Events[ElementToDelete].Lektor === event.Lektor && Events[ElementToDelete].Title === event.Title && Events[ElementToDelete].Place === event.Place){
+                if(Events[ElementToDelete].key === event.key){
                     isEditMode = false;
                     setIsModalOpen(false);
                     return;
                 }
                 openNotification(3);
-                Events.splice(ElementToDelete, 1);
+                await deleteEvent(ElementToDelete);
             }
             else openNotification(4);
-            Events.push({
-                Day: event.Day,
-                Title: event.Title,
-                Place: event.Place,
-                Lektor: event.Lektor,
-                From: From,
-                To: To,
-                Type: event.Type
-            })
-            isEditMode = false;
-            setIsModalOpen(false);
-
+            try{
+                await addEvent(
+                    {
+                        key:-1,
+                        Day: event.Day,
+                        Title: event.Title,
+                        Place: event.Place,
+                        Lektor: event.Lektor,
+                        From: From,
+                        To: To,
+                        Type: event.Type
+                    }
+                );
+                const data = await fetchEvent();
+                setEvents(data);
+                isEditMode = false;
+                setIsModalOpen(false);
+            }
+            catch (error){
+                openNotification(7);
+            }
         }
     };
     const handleCancel = () => {
         isEditMode = false;
         setIsModalOpen(false);
     };
-    const deleteElement = () => {
-        Events.splice(ElementToDelete,1);
-        handleCancel();
-        openNotification(2);
+    const deleteElement = async () => {
+        try {
+            await deleteEvent(ElementToDelete);
+            const data = await fetchEvent();
+            setEvents(data);
+            handleCancel();
+            openNotification(2);
+        }
+        catch (error){
+            openNotification(6);
+        }
     };
-
-    const { Option } = Select;
-    const [form] = Form.useForm();
 
     const onFinish = (values) => {
         handleOk(values);
@@ -519,7 +430,7 @@ export default function Schedule(){
                     <BiArrowBack/>
                 </div>
                 <div class="title">
-                    Plany
+                    Plan zajęć
                 </div>
                 <div class="time">
                     <Row>
@@ -540,12 +451,7 @@ export default function Schedule(){
                     <Row>
                         <Col flex={`${(100/25)}%`}><div class="weekday"><span>{Days[RowIndex]}</span></div></Col>
                         {Events.filter(event => event.Day === RowIndex).map((event) => (
-                            <Col flex={`${(96 / 12) * (event.To - event.From)}%`} style={{marginLeft: `${Distance(Events.sort(function(a,b){
-                                    if(a.Day < b.Day) return -1;
-                                    if(a.Day > b.Day) return 1;
-                                    if (a.From < b.From) return -1;
-                                    if (a.From > b.From) return 1;
-                                    return 0;}), event)}%`}}>
+                            <Col flex={`${(96 / 12) * (event.To - event.From)}%`} style={{marginLeft: `${Distance(Events, event)}%`}}>
                                 <div className="cell" style={{
                                     border: `3px solid ${event.Type === "w" ? "#dbb404" : event.Type === "l" ? "#04b530" : event.Type === "lekt" ? "#04dbb7" : event.Type === "p" ? "#b504a0" : "gray"}`
                                 }}>
