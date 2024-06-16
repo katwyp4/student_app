@@ -1,6 +1,19 @@
 import React, {useEffect, useState} from 'react';
-import {Badge, Button, Calendar, Col, ConfigProvider, Divider, Input, Modal, Row,  TimePicker, message} from 'antd';
-import { BiArrowBack } from "react-icons/bi";
+import {
+    Badge,
+    Button,
+    Calendar,
+    Col,
+    ConfigProvider,
+    Divider,
+    Input,
+    Modal,
+    Row,
+    TimePicker,
+    message,
+    Tooltip
+} from 'antd';
+import { BiArrowBack, BiTrash } from "react-icons/bi";
 import { useNavigate } from 'react-router-dom';
 import plPl from 'antd/es/locale/pl_PL'
 import dayjs from 'dayjs';
@@ -9,21 +22,62 @@ import TextArea from "antd/es/input/TextArea";
 dayjs.locale('pl');
 
 let isAdmin = true;
-let dayEvent = [];
 let eventKey = 1;
-function EventDetails({ details }) {
+let dayEvent = [
+    {
+        key: eventKey++,
+        year: 2024,
+        month: 6,
+        day: 13,
+        type: "success",
+        content: "Dzień otwarty z firmą KILARGO",
+        details: "Opis: Dlaczego warto wziąć udział?\n" +
+            "\n" +
+            "Poznaj świat lodów Kilargo - Dowiedz się, jak powstają naszej wyjątkowe produkty i jakie technologie wykorzystujemy do produkcji.\n" +
+            "Ścieżki kariery - Zdobądź informacje o możliwościach rozwoju zawodowego w naszej firmie. Poznaj aktualne oferty pracy.\n" +
+            "Networking - Spotkaj się z przedstawicielem firmy Kilargo, zadaj pytania i zostaw swoje CV.\n" +
+            "Degustacja lodów - Skosztuj naszych pysznych lodów i przekonaj się, że nikt nie robi lepszych!\n" +
+            "Zapraszamy!\n" +
+            "Godzina: 10:00\n" +
+            "Miejsce: Politechnika"
+    }
+];
+
+
+function DeleteIcon({ onClick }) {
     return (
-        <div style={{ whiteSpace: 'pre-line' }}>
-            {details.split('\n').map((line, index) => {
-                const [label, ...rest] = line.split(':');
-                return label && rest.length ? (
-                    <p key={index}>
-                        <strong>{label}:</strong> {rest.join(':')}
-                    </p>
-                ) : (
-                    <p key={index}>{line}</p>
-                );
-            })}
+        <Tooltip title="Usuń wydarzenie">
+            <div style={{ fontSize: '20px', cursor: 'pointer', marginLeft: '10px' }} onClick={onClick}>
+                <BiTrash />
+            </div>
+        </Tooltip>
+    );
+}
+function EventDetails({ details }) {
+    const lines = details.split('\n');
+
+    const renderLine = (line, index) => {
+        if (line.includes(':')) {
+            const parts = line.split(':');
+            return (
+                <p key={index}>
+                    <strong>{parts[0]}:</strong> {parts.slice(1).join(':')}
+                </p>
+            );
+        } else {
+            return (
+                <p key={index}>
+                    {line}
+                </p>
+            );
+        }
+    };
+
+    return (
+        <div style={{ whiteSpace: 'pre-line', position: 'relative' }}>
+            {lines.map((line, index) => (
+               renderLine(line,index)
+            ))}
         </div>
     );
 }
@@ -42,7 +96,7 @@ function DisplayForm({ label, value, onChange, placeholder, disabled, showError,
                             format={format}
                             value={value ? dayjs(value, format) : null}
                             onChange={(time, timeString) => onChange(timeString)}
-                            style={{ marginBottom: '10px', borderColor: showError && !value ? 'red' : null }}
+                            style={{ marginBottom: '10px',  borderColor: (showError && !value) || (label === 'Godzina' && showError) ? 'red' : null}}
                             disabled={disabled}
                         />
                 ) :
@@ -84,13 +138,19 @@ export default function Calendar_fun(){
 
     const [showDescriptionInput, setShowDescriptionInput] = useState(false);
     const [showErrorMessage, setShowErrorMessage] = useState(false);
+    const [showTimeError, setShowTimeError] = useState(false);
+
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [eventToDelete, setEventToDelete] = useState(null);
     const handleCreateButtonClick = () => {
         setShowDescriptionInput(true);
         if(content && description && time && location)
         {
             if (isTimeInValidRange(time)) {
                 handleCreateEvent();
+                setShowTimeError(false);
             } else {
+                setShowTimeError(true);
                 message.error('Niepoprawny zakres godzin.');
             }
         }
@@ -98,6 +158,10 @@ export default function Calendar_fun(){
         {
             if (showDescriptionInput) {
                 setShowErrorMessage(true);
+                if(!time)
+                {
+                    setShowTimeError(true);
+                }
             }
         }
     };
@@ -112,17 +176,25 @@ export default function Calendar_fun(){
             details: `Opis: ${description}\nGodzina: ${time}\nMiejsce: ${location}`
         };
         dayEvent.push(newEvent);
+
+        dayEvent.sort((a, b) => {
+            const timeA = dayjs(a.details.split('\n').find(line => line.startsWith('Godzina:')).substring(8), 'HH:mm');
+            const timeB = dayjs(b.details.split('\n').find(line => line.startsWith('Godzina:')).substring(8), 'HH:mm');
+            return timeA.isBefore(timeB) ? -1 : 1;
+        });
+
         resetForm();
-        setIsModalOpen(false);
         setShowDescriptionInput(false);
         setShowErrorMessage(false);
+        setShowTimeError(false);
     };
 
     const isTimeInValidRange = (time) => {
         const format = 'HH:mm';
-        const minTime = dayjs('08:00', format);
-        const maxTime = dayjs('21:00', format);
+        const minTime = dayjs('07:59', format);
+        const maxTime = dayjs('21:01', format);
         const inputTime = dayjs(time, format);
+        setShowTimeError(false);
         return inputTime.isAfter(minTime) && inputTime.isBefore(maxTime);
     };
     const resetForm = () => {
@@ -131,14 +203,37 @@ export default function Calendar_fun(){
         setTime('');
         setLocation('');
     };
+
+    const handleDeleteEvent = (key) => {
+        setEventToDelete(key);
+        setIsDeleteModalOpen(true);
+    };
+
+    const confirmDeleteEvent = () => {
+        dayEvent = dayEvent.filter(event => event.key !== eventToDelete);
+        setIsDeleteModalOpen(false);
+    };
     const handleOk = () => {
         setIsModalOpen(false);
+        if (!showDescriptionInput) {
+            resetForm();
+            setShowErrorMessage(false);
+            setShowTimeError(false);
+        }
     };
     const handleCancel = () => {
-        setIsModalOpen(false);
+        if(!showDescriptionInput)
+        {
+            setIsModalOpen(false);
+        }
         setShowDescriptionInput(false);
         setShowErrorMessage(false);
+        setShowTimeError(false);
         resetForm();
+    };
+    const handleDeleteCancel = () => {
+        setIsDeleteModalOpen(false);
+        setEventToDelete(null);
     };
     const onSelect = (value) => {
         if(selectedMonth===value.month()+1 && selectedYear === value.year()) setIsModalOpen(true);
@@ -277,12 +372,12 @@ export default function Calendar_fun(){
             <Modal title={selectedDay && selectedMonthTxt ? `${selectedDay} ${selectedMonthTxt}` : 'Basic Modal'}
                    open={isModalOpen} onOk={handleOk} onCancel={handleCancel}
 
-                   footer={isAdmin ? [
+                   footer={isAdmin && !showDescriptionInput ? [
                        <Button key="cancel" onClick={handleCancel}>
                            Anuluj
                        </Button>,
                        <Button key="create" type="primary" onClick={handleCreateButtonClick}>
-                           Utworz
+                           Utwórz
                        </Button>
                    ] : null}
             >
@@ -313,7 +408,7 @@ export default function Calendar_fun(){
                             value={time}
                             onChange={setTime}
                             disabled={!showDescriptionInput}
-                            showError={showErrorMessage}
+                            showError={showTimeError}
                             useTextArea={false}
                             isTimePicker={true}
 
@@ -332,13 +427,36 @@ export default function Calendar_fun(){
                     </>
                 )}
                 {showErrorMessage && <p style={{ color: 'red' }}>Nie wszystkie pola zostały wypełnione</p>}
+
+                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
+                    {isAdmin && showDescriptionInput? [
+                    <Button key="cancel" onClick={handleCancel} style={{ marginRight: '8px' }}>
+                        Anuluj
+                    </Button>,
+                    <Button key="create" type="primary" onClick={handleCreateButtonClick}>
+                        Zapisz
+                    </Button>
+                ] : null}
+                </div>
                 {getListData(dayjs(`${selectedYear}-${selectedMonth}-${selectedDay}`)).map((event, index) => (
                     <div key={index}>
-                        <h2>{event.content}</h2>
+                        <h2 style={{ display: 'flex', alignItems: 'center' }}>
+                            {event.content}
+                            {isAdmin ? <DeleteIcon onClick={() => handleDeleteEvent(event.key)} /> : null}
+                        </h2>
                         <EventDetails details={event.details}/>
                         {index!==getListData(dayjs(`${selectedYear}-${selectedMonth}-${selectedDay}`)).length-1 && <Divider/>}
                     </div>
                 ))}
+            </Modal>
+            <Modal title="Potwierdzenie usunięcia"
+                   open={isDeleteModalOpen}
+                   onOk={confirmDeleteEvent}
+                   onCancel={handleDeleteCancel}
+                   okText="Usuń"
+                   cancelText="Anuluj"
+            >
+                <p>Czy na pewno chcesz usunąć to wydarzenie?</p>
             </Modal>
         </ConfigProvider>
     );
