@@ -19,31 +19,11 @@ import plPl from 'antd/es/locale/pl_PL'
 import dayjs from 'dayjs';
 import 'dayjs/locale/pl';
 import TextArea from "antd/es/input/TextArea";
+import {addEvent, deleteEvent, fetchEvent} from "../../services/calendar.service";
 dayjs.locale('pl');
 
 let isAdmin = true;
 let eventKey = 1;
-let dayEvent = [
-    {
-        key: eventKey++,
-        year: 2024,
-        month: 6,
-        day: 13,
-        type: "success",
-        content: "Dzień otwarty z firmą KILARGO",
-        details: "Opis: Dlaczego warto wziąć udział?\n" +
-            "\n" +
-            "Poznaj świat lodów Kilargo - Dowiedz się, jak powstają naszej wyjątkowe produkty i jakie technologie wykorzystujemy do produkcji.\n" +
-            "Ścieżki kariery - Zdobądź informacje o możliwościach rozwoju zawodowego w naszej firmie. Poznaj aktualne oferty pracy.\n" +
-            "Networking - Spotkaj się z przedstawicielem firmy Kilargo, zadaj pytania i zostaw swoje CV.\n" +
-            "Degustacja lodów - Skosztuj naszych pysznych lodów i przekonaj się, że nikt nie robi lepszych!\n" +
-            "Zapraszamy!\n" +
-            "Godzina: 10:00\n" +
-            "Miejsce: Politechnika"
-    }
-];
-
-
 function DeleteIcon({ onClick }) {
     return (
         <Tooltip title="Usuń wydarzenie">
@@ -142,6 +122,28 @@ export default function Calendar_fun(){
 
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [eventToDelete, setEventToDelete] = useState(null);
+    let [dayEvent, setEvent] = useState([]);
+
+    useEffect(() => {
+        const AdminCheck = ()=>{
+            isAdmin = localStorage.getItem('email') === "admin@gmail.com";
+        }
+        AdminCheck();
+    }, []);
+
+    useEffect(() => {
+        const init = async () =>{
+            try{
+                const data = await fetchEvent();
+                setEvent(data);
+            }catch (error)
+            {
+                message.error("Pobieranie Kalendarzu  nie powiodło się");
+            }
+        }
+        init();
+    }, []);
+
     const handleCreateButtonClick = () => {
         setShowDescriptionInput(true);
         if(content && description && time && location)
@@ -165,23 +167,24 @@ export default function Calendar_fun(){
             }
         }
     };
-    const handleCreateEvent = () => {
-        const newEvent = {
-            key: eventKey++,
-            year: selectedYear,
-            month: selectedMonth,
-            day: selectedDay,
-            type: "success",
-            content: content,
-            details: `Opis: ${description}\nGodzina: ${time}\nMiejsce: ${location}`
-        };
-        dayEvent.push(newEvent);
-
-        dayEvent.sort((a, b) => {
-            const timeA = dayjs(a.details.split('\n').find(line => line.startsWith('Godzina:')).substring(8), 'HH:mm');
-            const timeB = dayjs(b.details.split('\n').find(line => line.startsWith('Godzina:')).substring(8), 'HH:mm');
-            return timeA.isBefore(timeB) ? -1 : 1;
-        });
+    const handleCreateEvent = async () => {
+        try {
+            await addEvent(
+                {
+                    key: eventKey++,
+                    year: selectedYear,
+                    month: selectedMonth,
+                    day: selectedDay,
+                    type: "success",
+                    content: content,
+                    details: `Opis: ${description}\nGodzina: ${time}\nMiejsce: ${location}`
+                }
+            );
+            const data = await fetchEvent();
+            setEvent(data);
+        } catch (error) {
+            message.error("Dodawanie nie powiodło się");
+        }
 
         resetForm();
         setShowDescriptionInput(false);
@@ -209,9 +212,16 @@ export default function Calendar_fun(){
         setIsDeleteModalOpen(true);
     };
 
-    const confirmDeleteEvent = () => {
-        dayEvent = dayEvent.filter(event => event.key !== eventToDelete);
-        setIsDeleteModalOpen(false);
+    const confirmDeleteEvent = async () => {
+        try {
+            await deleteEvent(eventToDelete);
+            const data = await fetchEvent();
+            setEvent(data);
+            setIsDeleteModalOpen(false);
+        } catch (error) {
+            message.error("Usunięcie nie powiodło się");
+        }
+
     };
     const handleOk = () => {
         setIsModalOpen(false);
