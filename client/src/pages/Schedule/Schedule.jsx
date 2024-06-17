@@ -333,14 +333,9 @@ export default function Schedule(){
         
         .schedule-body .cell {
             height: 100px;
-            margin: 0 1% 5px 1%;
+            margin: 0 1% 0 1%;
             border-radius: 5px;
             background-color: white;
-        }
-        
-        .schedule-body .void_cell {
-            height: 100px;
-            margin: 0 1% 5ox 1%;
         }
         
         .cell_title{
@@ -354,7 +349,7 @@ export default function Schedule(){
         .weekday {
             width: 100%;
             text-align: center;
-            height: 100%;
+            height: 111px;
             display: flex;
             flex-direction: column;
             justify-content: space-around;
@@ -375,7 +370,7 @@ export default function Schedule(){
         }
         .grid-row {
             display: flex;
-            height: 109px;
+            height: 110px;
             border-top: 1px solid #ccc;
         }
         .grid-cell {
