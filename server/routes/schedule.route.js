@@ -1,9 +1,9 @@
 //post  i get
 var express = require('express');
-const chatController = require("../controllers/schedule.controller");
+const scheduleController = require("../controllers/schedule.controller");
 var router = express.Router();
 
-router.get('/', chatController.fetch);
-router.post('/', chatController.add);
-router.delete('/:key', chatController.destroy);
+router.get('/', scheduleController.fetch);
+router.post('/', scheduleController.add);
+router.delete('/:key', scheduleController.destroy);
 module.exports = router;
