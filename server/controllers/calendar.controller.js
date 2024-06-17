@@ -1,4 +1,4 @@
-let dayEvent = require('../models/calendar.model');
+const dayEvent = require('../models/calendar.model');
 
 const fetch = async (req, res)  => {
     try{
@@ -22,7 +22,14 @@ const add = async (req, res)  => {
 const destroy = async (req, res)  => {
     try{
         const eventToDelete = req.params.key;
-        dayEvent = dayEvent.filter(event => event.key !== eventToDelete);
+        let i;
+        for(i = 0; i<dayEvent.length; i++){
+            console.log(dayEvent[i].key);
+            if(dayEvent[i].key == eventToDelete){
+                dayEvent.splice(i,1);
+                break;
+            }
+        }
         res.status(200).json();
     }catch(error){
         console.error(error);
